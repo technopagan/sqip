@@ -3,52 +3,42 @@
   "private": true,
   "scripts": {
     "prepare": "lerna run prepare",
-    "build": "lerna exec --parallel --ignore sqip-demo 'babel --root-mode upward src --out-dir dist --delete-dir-on-start'",
-    "build:watch": "lerna exec --parallel --ignore sqip-demo 'babel --root-mode upward src --out-dir dist --delete-dir-on-start --watch --verbose'",
+    "build": "npm run build:clean && npx lerna run build --no-private --scope sqip && npx lerna run build --no-private --ignore sqip",
+    "build:watch": "lerna exec --ignore sqip-demo 'npm run watch'",
+    "build:clean": "rm -rf \"packages/*/dist/*\" packages/*/tsconfig.tsbuildinfo",
     "test": "npm run lint && npm run test:unit && npm run test:e2e",
     "test:unit": "TERM=xterm jest --testPathPattern='unit/*' --coverage",
     "test:unit:watch": "TERM=xterm jest --testPathPattern='unit/*' --coverage --watch",
     "pretest:e2e": "npm run build",
     "test:e2e": "TERM=xterm jest --testPathPattern='e2e/*'",
     "test:e2e:watch": "TERM=xterm jest --testPathPattern='e2e/*' --watch",
-    "lint": "eslint packages/*/src",
+    "lint": "eslint packages/*/src --ext .ts,.tsx",
     "format": "lerna exec 'prettier --write src/**/*.js __tests__/**/*.js'",
     "check-dependencies": "lerna exec --ignore sqip-demo \"pwd && npx depcheck --ignore-dirs 'dist' .\" --no-bail --concurrency 1",
     "publish": "npm run build && lerna publish --conventional-commits",
     "publish:canary": "npm run publish -- --dist-tag canary"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.3",
-    "@babel/core": "^7.10.3",
-    "@babel/preset-env": "^7.10.3",
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.0.1",
-    "babel-plugin-add-module-exports": "^1.0.0",
-    "babel-plugin-dynamic-import-node": "^2.3.3",
+    "@types/jest": "^26.0.22",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "codecov": "^3.7.0",
     "cz-conventional-changelog": "^3.2.0",
-    "eslint": "^7.3.0",
-    "eslint-config-prettier": "^6.11.0",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.21.2",
-    "eslint-plugin-jest": "^23.16.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-promise": "^4.0.1",
-    "husky": "^4.2.5",
+    "eslint-plugin-jest": "^24.3.5",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "husky": "^6.0.0",
     "jest": "^26.0.1",
-    "lerna": "^3.22.1",
-    "prettier": "^2.0.5"
+    "lerna": "^4.0.0",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.5",
+    "typescript": "^4.2.4"
   },
-  "jest": {
-    "verbose": true,
-    "collectCoverageFrom": [
-      "packages/*/src/**/*.js"
-    ],
-    "coverageDirectory": "./coverage/",
-    "transformIgnorePatterns": [
-      "/dist/",
-      "/node_modules/"
-    ]
+  "engines": {
+    "node": ">=12.13.0"
   },
   "workspaces": [
     "packages/*",
